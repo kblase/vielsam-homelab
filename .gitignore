@@ -1,4 +1,6 @@
-bootstrap/talos-cluster
+bootstrap/talos-cluster/*
+!bootstrap/talos-cluster/.gitkeep
+bootstrap/cilium/cilium.yaml
 
 Chart.lock
 # General files for the project
