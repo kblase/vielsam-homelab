@@ -1,6 +1,11 @@
-bootstrap/talos-cluster/*
-!bootstrap/talos-cluster/.gitkeep
-bootstrap/cilium/cilium.yaml
+bootstrap/talos/*
+!bootstrap/talos/.gitkeep
+!bootstrap/talos/patch-*
+bootstrap/cilium/*
+!bootstrap/cilium/.gitkeep
+bootstrap/argocd/*
+!bootstrap/argocd/.gitkeep
+
 
 Chart.lock
 # General files for the project
