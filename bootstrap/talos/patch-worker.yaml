@@ -1,0 +1,1 @@
+# Worker specific patches for Talos. This file is used to patch the worker nodes of the cluster. The patches are applied in the order they are defined in this file.
