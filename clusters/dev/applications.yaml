@@ -75,6 +75,7 @@ spec:
     # Git-Repository mit den Values
     - repoURL: https://github.com/kblase/vielsam-homelab.git
       targetRevision: dev
+      path: platform/external-secrets/manifests
       ref: values
   destination:
     server: https://kubernetes.default.svc
@@ -105,6 +106,7 @@ spec:
     # Git-Repository mit den Values
     - repoURL: https://github.com/kblase/vielsam-homelab.git
       targetRevision: dev
+      path: platform/truenas-csi/manifests
       ref: values
   destination:
     server: https://kubernetes.default.svc

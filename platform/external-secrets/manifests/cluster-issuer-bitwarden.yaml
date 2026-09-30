@@ -1,5 +1,5 @@
 apiVersion: cert-manager.io/v1
-kind: ClusterIssuer
+kind: Issuer
 metadata:
   name: bitwarden-bootstrap-issuer
 spec:
@@ -9,7 +9,6 @@ apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
   name: bitwarden-bootstrap-certificate
-  namespace: cert-manager
 spec:
   # this is discouraged but required by ios
   commonName: cert-manager-bitwarden-tls
@@ -31,11 +30,11 @@ spec:
     size: 2048
   issuerRef:
     name: bitwarden-bootstrap-issuer
-    kind: ClusterIssuer
+    kind: Issuer
     group: cert-manager.io
 ---
 apiVersion: cert-manager.io/v1
-kind: ClusterIssuer
+kind: Issuer
 metadata:
   name: bitwarden-certificate-issuer
 spec:
