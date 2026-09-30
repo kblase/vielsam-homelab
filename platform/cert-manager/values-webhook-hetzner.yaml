@@ -1,0 +1,148 @@
+---
+# Values vom cert-manager-webhook-hetzner
+# -- The GroupName here is used to identify your company or business unit that
+# created this webhook.
+# For example, this may be "acme.mycompany.com".
+# This name will need to be referenced in each Issuer's `webhook` stanza to
+# inform cert-manager of where to send ChallengePayload resources in order to
+# solve the DNS01 challenge.
+# This group name should be **unique**, hence using your own company's domain
+# here is recommended.
+groupName: acme.hetzner.com
+
+# -- Additional environment variables, where each key represents the name of the variable.
+# The value follows standard Kubernetes environment variable formats.
+env: {}
+
+certManager:
+  # -- Namespace of your cert-manager deployment.
+  namespace: cert-manager
+  # -- Name of the cert-managers service account.
+  serviceAccountName: cert-manager
+
+# -- Additional image pull secrets in the [standard Kubernetes format](https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/)
+imagePullSecrets: []
+
+image:
+  # -- Repository of the webhook image.
+  repository: docker.io/hetzner/cert-manager-webhook-hetzner
+  # -- Tag of the webhook image.
+  # @default -- Current version
+  tag: v0.9.0 # x-releaser-pleaser-version
+  # -- Pull policy of the webhook image.
+  pullPolicy: IfNotPresent
+
+# -- Override the name of the chart.
+nameOverride: ""
+# -- Override the full name of the chart.
+fullnameOverride: ""
+
+service:
+  # -- Kubernetes service type of the webhook service.
+  type: ClusterIP
+  # -- Port of the webhook service.
+  port: 443
+
+metrics:
+  serviceMonitor:
+    # -- Deploys a ServiceMonitor to scrape the metrics. **Requires** the ServiceMonitor CRD.
+    enabled: false
+
+# -- Number of replicas.
+replicaCount: 1
+
+# -- [Kubernetes startup probe](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/).
+# Set to `null` to disable the startup probe.
+# @default -- See [values.yaml](values.yaml)
+startupProbe:
+  httpGet:
+    scheme: HTTPS
+    path: /healthz
+    port: https
+
+# -- [Kubernetes liveness probe](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/).
+# Set to `null` to disable the liveness probe.
+# @default -- See [values.yaml](values.yaml)
+livenessProbe:
+  httpGet:
+    scheme: HTTPS
+    path: /healthz
+    port: https
+
+# -- [Kubernetes readiness probe](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/).
+# Set to `null` to disable the readiness probe.
+# @default -- See [values.yaml](values.yaml)
+readinessProbe:
+  httpGet:
+    scheme: HTTPS
+    path: /healthz
+    port: https
+
+# -- [Kubernetes resource management](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/) for the webhook
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
+
+# -- [Kubernetes node selector](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector) for the webhook.
+nodeSelector: {}
+
+# -- [Kubernetes tolerations](https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration) for the webhook.
+tolerations: []
+
+# -- [Kubernetes affinities](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#affinity-and-anti-affinity) for the webhook.
+affinity: {}
+
+# -- [Kubernetes pod security context](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod) for the webhook.
+# @default -- [Restricted](https://kubernetes.io/docs/concepts/security/pod-security-standards/#restricted)
+podSecurityContext:
+  runAsNonRoot: true
+  seccompProfile:
+    type: RuntimeDefault
+
+# -- [Kubernetes container security context](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container) for the webhook.
+# @default -- [Restricted](https://kubernetes.io/docs/concepts/security/pod-security-standards/#restricted)
+containerSecurityContext:
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+      - ALL
+
+# -- [Kubernetes deployment strategy](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy) for the deployment.
+strategy:
+  type: RollingUpdate
+
+# -- [Kubernetes labels](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/) added to the deployment metadata
+labels: {}
+
+# -- [Kubernetes annotations](https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/) added to the deployment metadata
+annotations: {}
+
+# -- Additional [volumes](https://kubernetes.io/docs/concepts/storage/volumes/) to add to the pod.
+extraVolumes: []
+
+# -- Additional volume mounts to add to the container.
+extraVolumeMounts: []
+
+# -- [Kubernetes labels](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/) added to the pod metadata
+podLabels: {}
+
+# -- [Kubernetes annotations](https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/) added to the pod metadata
+podAnnotations: {}
+
+# -- [Kubernetes pod disruption budget](https://kubernetes.io/docs/tasks/run-application/configure-pdb/)
+podDisruptionBudget:
+  enabled: false
+  # minAvailable: 1
+  # maxUnavailable: 1
+  # unhealthyPodEvictionPolicy: IfHealthyBudget
+
+# -- PriorityClassName of the application pods
+priorityClassName: ""

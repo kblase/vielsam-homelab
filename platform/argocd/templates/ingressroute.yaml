@@ -1,0 +1,17 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: {{ .Values.name }}-ingressroute
+  namespace: {{ .Values.name }}
+  annotations:
+    external-dns.alpha.kubernetes.io/target: k3s.local
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`argocd.wohnrudel.de`) && PathPrefix(`/`)
+      kind: Rule
+      services:
+        - name: {{ .Values.name }}-server
+          port: 80
+  tls: {}

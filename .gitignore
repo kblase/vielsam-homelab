@@ -6,6 +6,8 @@ bootstrap/cilium/*
 bootstrap/argocd/*
 !bootstrap/argocd/.gitkeep
 
+**/secrets.yaml
+
 
 Chart.lock
 # General files for the project

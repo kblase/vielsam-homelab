@@ -1,0 +1,118 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: app-of-apps
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/kblase/vielsam-homelab.git
+    targetRevision: dev
+    path: clusters/dev
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - SkipDryRunOnMissingResource=true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cert-manager
+  namespace: argocd
+spec:
+  project: default
+  sources:
+    # Helm Chart aus dem Internet
+    - repoURL: https://charts.jetstack.io
+      chart: cert-manager
+      targetRevision: 1.21.2
+      helm:
+        valueFiles:
+          - $values/platform/cert-manager/values.yaml
+    - repoURL: https://charts.hetzner.cloud
+      chart: cert-manager-webhook-hetzner
+      targetRevision: 0.9.0
+      helm:
+        valueFiles:
+          - $values/platform/cert-manager/values-webhook-hetzner.yaml
+    # Git-Repository mit den Values
+    - repoURL: https://github.com/kblase/vielsam-homelab.git
+      targetRevision: dev
+      path: platform/cert-manager/manifests
+      ref: values
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: cert-manager
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - SkipDryRunOnMissingResource=true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: external-secrets
+  namespace: argocd
+spec:
+  project: default
+  sources:
+    # Helm Chart aus dem Internet
+    - repoURL: https://charts.external-secrets.io
+      chart: external-secrets
+      targetRevision: 2.11.0
+      helm:
+        valueFiles:
+          - $values/platform/external-secrets/values.yaml
+          - $values/platform/external-secrets/values-dev.yaml
+    # Git-Repository mit den Values
+    - repoURL: https://github.com/kblase/vielsam-homelab.git
+      targetRevision: dev
+      ref: values
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: external-secrets
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - SkipDryRunOnMissingResource=true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: truenas-csi
+  namespace: argocd
+spec:
+  project: default
+  sources:
+    # Helm Chart aus dem Internet
+    - repoURL: https://raw.githubusercontent.com/truenas/truenas-csi/master/charts
+      chart: truenas-csi
+      targetRevision: 1.3.0
+      helm:
+        valueFiles:
+          - $values/platform/truenas-csi/values.yaml
+    # Git-Repository mit den Values
+    - repoURL: https://github.com/kblase/vielsam-homelab.git
+      targetRevision: dev
+      ref: values
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: truenas-csi
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - SkipDryRunOnMissingResource=true
