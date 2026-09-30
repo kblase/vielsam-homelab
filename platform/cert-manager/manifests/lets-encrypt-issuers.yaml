@@ -16,7 +16,7 @@ spec:
       - dns01:
           webhook:
             # This group needs to be configured when installing the helm package, otherwise the webhook won't have permission to create an ACME challenge for this API group.
-            groupName: acme.wohnrudel.de
+            groupName: acme.hetzner.com
             solverName: hetzner
             config:
               secretName: hetzner-api-key

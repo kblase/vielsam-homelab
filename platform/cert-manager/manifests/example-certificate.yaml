@@ -1,0 +1,27 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: example-wohnrudel-de
+  namespace: cert-manager
+spec:
+  secretName: example-wohnrudel-de-tls
+  commonName: example.wohnrudel.de
+  dnsNames:
+    - example.wohnrudel.de
+  secretTemplate:
+    annotations:
+      domain: "wohnrudel.de"
+      host: "example"
+    labels:
+      my-secret-label: test
+  usages:
+    - server auth
+    - client auth
+  issuerRef:
+    name: lets-encrypt-issuer
+    # We can reference ClusterIssuers by changing the kind here.
+    # The default value is Issuer (i.e. a locally namespaced Issuer)
+    kind: ClusterIssuer
+    # This is optional since cert-manager will default to this value however
+    # if you are using an external issuer, change this to that issuer group.
+    group: cert-manager.io

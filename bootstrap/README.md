@@ -334,3 +334,27 @@ kubectl get nodes
 ```
 
 After successfull installation save atleast the `secrets.yaml` to a secure location for later use, if possible save all generated files (`worker.yaml`, `controlplane.yaml`, `secrets.yaml` and `talosconfig`)
+
+## Apply initial Platform Manifests
+
+The initial setup is up and running now. Unfortunatly there is alot more to do. In the next step we will apply all manifests that needed to bootstrap our Platform Applications. These are:
+
+1. Namespaces for `cert-manager` and `external-secrets`
+2. Secret for `external-secrets` to connect to bitwarden and load all the other secrets
+3. Secret for the initial connection of `cert-manager` to Hetzner
+4. App-of-Apps Application in `ArgoCD`
+
+### 1. Create Namespaces
+```sh
+kubectl create ns cert-manager
+kubectl create ns external-secrets
+```
+
+### 2. Create connection secret for Bitwarden
+
+```sh
+# replace with real token
+export bitwarden_token=0.b9afcb07-824c-45f0-bee1-b1f800e01d51LoYT6B76MgpOckxPpZZ3DZSwpHpvA:CuMYDNGNWOBgTpOoXqjClw==
+k create secret generic bitwarden-access-token -n external-secrets --from-literal=token=$bitwarden_token
+
+```
