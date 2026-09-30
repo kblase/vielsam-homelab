@@ -1,0 +1,9 @@
+apiVersion: v2
+name: bitwarden-secrets-manager
+description: A Helm chart for Bitwarden Secrets Manager
+type: application
+version: 0.0.0
+dependencies:
+  - name: sm-operator
+    version: "2.0.3"
+    repository: "https://charts.bitwarden.com"
